@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 
 // Read
-export const getUser = async (req, res)=> {
+exports.getUser = async (req, res)=> {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
@@ -11,5 +11,6 @@ export const getUser = async (req, res)=> {
         res.status(404).json({ message: error.message });
     }
 };
+
 
 
