@@ -13,7 +13,7 @@ exports.login = async (req, res, next) => {
             });;
         }
         // 2) Check if user exists && password is correct
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findOne({ email })
     
         if (!user || !(await user.correctPassword(password, user.password))) {
             res.status(500).json({
@@ -27,9 +27,12 @@ exports.login = async (req, res, next) => {
             expiresIn: "90d"
         });
 
+        user.password = undefined
+
         res.status(201).json({
             status: "success",
-            token
+            token,
+            user
         });
     } catch (error) {
         res.status(500).json({
@@ -54,10 +57,13 @@ exports.register = async (req, res, next)=> {
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
             expiresIn: "90d"
         });
-    
+        
+        newUser.password = undefined
+        newUser.passwordConfirm = undefined
         res.status(201).json({
             status: "success",
-            token
+            token,
+            newUser
         });
     } catch (error) {
         res.status(500).json({
